@@ -6,7 +6,6 @@ const bodyParser = require('body-parser');
 
 const db = require('./models');
 const handle = require('./handlers');
-const port = process.env.PORT;
 
 const app = express();
 
@@ -30,4 +29,4 @@ app.get('/api/articles', (req, res) => {
 app.use(handle.notFound);
 app.use(handle.errors);
 
-app.listen(port, () => console.log(`Example app listening on port ${port}!`));
+app.listen(process.env.PORT, () => console.log(`Example app listening on port ${process.env.PORT}!`));
