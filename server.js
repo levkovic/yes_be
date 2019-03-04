@@ -1,7 +1,12 @@
+require('dotenv').config();
 const port = 8080;
 
 const express = require('express');
 const mongoose = require('mongoose');
+const cors = require('cors');
+const bodyParser = require('body-parser');
+
+const handle = require('./handlers');
 
 mongoose.connect('mongodb://localhost/yes_db', { useNewUrlParser: true });
 let db = mongoose.connection;
@@ -15,6 +20,12 @@ db.on('error', function(err) {
 });
 
 const app = express();
+
+app.use(cors());
+app.use(bodyParser.json());
+
+app.use(handle.notFound);
+app.use(handle.errors);
 
 let Article = require('./models/article');
 
