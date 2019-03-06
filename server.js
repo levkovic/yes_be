@@ -6,11 +6,13 @@ const bodyParser = require('body-parser');
 
 const db = require('./models');
 const handle = require('./handlers');
+const routes = require('./routes');
 
 const app = express();
 
 app.use(cors());
 app.use(bodyParser.json());
+app.use('/api/auth', routes.auth);
 
 app.get('/api/users', (req, res) => {
     const users = [
@@ -25,7 +27,6 @@ app.get('/api/articles', (req, res) => {
         res.json(articles);
     });
 });
-
 app.use(handle.notFound);
 app.use(handle.errors);
 

@@ -1,4 +1,5 @@
-let mongoose = require('mongoose');
+const mongoose = require('mongoose');
+const bcrypt = require('bcryptjs');
 
 let userSchema =  mongoose.Schema({
     username: {
@@ -9,7 +10,33 @@ let userSchema =  mongoose.Schema({
     password: {
         type: String,
         required: true
+    },
+    created: {
+        type: Date,
+        default: Date.now
     }
 });
 
-let User = module.exports = mongoose.model('User', userSchema);
+userSchema.pre('save', async function (next) {
+    try {
+        if (!this.isModified('password')) {
+            return next();
+        }
+
+        const hashed = await bcrypt.hash(this.password, 10);
+        this.password = hashed;
+        next();
+    } catch (err) {
+        return next(err);
+    }
+});
+
+userSchema.methods.comparePassword = async function (attempt, next) {
+    try {
+        return await bcrypt.compare(attempt, this.password);
+    } catch (err) {
+        next(err);
+    }
+}
+
+module.exports = mongoose.model('User', userSchema);
